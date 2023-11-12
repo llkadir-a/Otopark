@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otopark Ücret Hesaplayıcı</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        #container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        label, input, select {
+            margin: 10px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+
+    <h1>Otopark Ücret Hesaplayıcı</h1>
+
+    <form id="parkingForm">
+        <label for="vehicleType">Araç Türünü Seçin:</label>
+        <select id="vehicleType" name="vehicleType">
+            <option value="o">Otomobil</option>
+            <option value="k">Kamyon</option>
+            <option value="i">İş Makinası</option>
+        </select>
+
+        <label for="stayHours">Kalma Saatini Girin:</label>
+        <input type="number" id="stayHours" name="stayHours" required>
+
+        <button type="button" onclick="calculateFee()">Ücreti Hesapla</button>
+    </form>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+    function calculateFee() {
+        var vehicleType = document.getElementById("vehicleType").value;
+        var stayHours = parseInt(document.getElementById("stayHours").value);
+
+        if (!isNaN(stayHours)) {
+            var result = document.getElementById("result");
+            var totalFee = calculateParkingFee(vehicleType, stayHours);
+
+            if (totalFee !== "Geçersiz araç türü") {
+                result.innerHTML = `<p>Araç ${stayHours} saat kalırsa toplam ücret: ${totalFee} TL</p>`;
+            } else {
+                alert("Geçersiz araç türü");
+            }
+        } else {
+            alert("Lütfen geçerli bir saat sayısı girin.");
+        }
+    }
+
+    function calculateParkingFee(vehicleType, hours) {
+        if (vehicleType === "o") {
+            if (hours <= 2) {
+                return 5;
+            } else if (hours <= 10) {
+                return 5 + (hours - 2) * 1;
+            } else {
+                var baseFee = 13;
+                if (hours <= 24) {
+                    return baseFee;
+                } else {
+                    var nextDayHours = hours - 24;
+                    if (nextDayHours <= 2) {
+                        return baseFee + 5;
+                    } else {
+                        return baseFee + 5 + (nextDayHours - 2);
+                    }
+                }
+            }
+        } else if (vehicleType === "k") {
+            if (hours <= 2) {
+                return 8;
+            } else if (hours <= 8) {
+                return 8 + (hours - 2) * 2;
+            } else {
+                var baseFeeK = 20;
+                if (hours <= 24) {
+                    return baseFeeK;
+                } else {
+                    var nextDayHoursK = hours - 24;
+                    return baseFeeK + nextDayHoursK;
+                }
+            }
+        } else if (vehicleType === "i") {
+            if (hours <= 2) {
+                return 12;
+            } else if (hours <= 8) {
+                return 12 + (hours - 2) * 3;
+            } else {
+                var baseFeeI = 27;
+                if (hours <= 24) {
+                    return baseFeeI;
+                } else {
+                    var nextDayHoursI = hours - 24;
+                    return baseFeeI + nextDayHoursI;
+                }
+            }
+        } else {
+            return "Geçersiz araç türü";
+        }
+    }
+</script>
+
+</body>
+</html>
